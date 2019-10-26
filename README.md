@@ -21,4 +21,5 @@ PhotoRenderer photoViewer = new PhotoRenderer(GreyscalePalette.getPalette(), Ren
 var photoData = Files.readAllBytes(Path.of("photo.bin"));
 var src = photoViewer.createImage(photoData);
 
-ImageIO.write(src, "PNG", new File("output_sepia.png"));```
+ImageIO.write(src, "PNG", new File("output_sepia.png"));
+```
