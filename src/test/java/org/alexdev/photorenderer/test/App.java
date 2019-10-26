@@ -40,63 +40,31 @@ public class App {
         ImageIO.write(src, "PNG", new File("image2.png"));
     }
 /*
-    public static BufferedImage toSepia(BufferedImage img, int sepiaIntensity) {
-        BufferedImage sepia = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        // Play around with this.  20 works well and was recommended
-        //   by another developer. 0 produces black/white image
-        int sepiaDepth = 20;
+         BufferedImage in = ImageIO.read(new FileInputStream("image.png"));
 
-        int w = img.getWidth();
-        int h = img.getHeight();
+        BufferedImage image = new BufferedImage(
+                in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-        WritableRaster raster = sepia.getRaster();
+        Graphics2D g = image.createGraphics();
+        g.drawImage(in, 0, 0, null);
+        g.dispose();
 
-        // We need 3 integers (for R,G,B color values) per pixel.
-        int[] pixels = new int[w * h * 3];
-        img.getRaster().getPixels(0, 0, w, h, pixels);
+        List<Color> colorList = new ArrayList<>();
 
-        for (int x = 0; x < img.getWidth(); x++) {
-            for (int y = 0; y < img.getHeight(); y++) {
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                Color color = new Color(image.getRGB(x, y));
 
-                int rgb = img.getRGB(x, y);
-                Color color = new Color(rgb, true);
-                int r = color.getRed();
-                int g = color.getGreen();
-                int b = color.getBlue();
-                int gry = (int) ((r + g + b) / 3.5);
-
-                r = g = b = gry;
-                r = r + (sepiaDepth * 3);
-                g = g + sepiaDepth;
-
-                if (r > 255) {
-                    r = 255;
+                if (colorList.stream().noneMatch(c -> color.getRed() == c.getRed() && color.getGreen() == c.getGreen() && color.getBlue() == c.getBlue())) {
+                    colorList.add(color);
                 }
-                if (g > 255) {
-                    g = 255;
-                }
-                if (b > 255) {
-                    b = 255;
-                }
-
-                // Darken blue color to increase sepia effect
-                b -= sepiaIntensity;
-
-                // normalize if out of bounds
-                if (b < 0) {
-                    b = 0;
-                }
-                if (b > 255) {
-                    b = 255;
-                }
-
-                color = new Color(r, g, b, color.getAlpha());
-                sepia.setRGB(x, y, color.getRGB());
-
             }
         }
 
-        return sepia;
-    }*/
+        for (Color color : colorList) {
+            System.out.println("0xff" + String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) + ",");
+        }
+
+ */
 
 }
