@@ -10,3 +10,15 @@ Traditional Sepia theme:
 Greyscale theme:
 
 ![](https://i.imgur.com/2M8qYJJ.png)
+
+## How to use
+
+```java
+// Feel free to read your own PAL files by using PaletteUtils.readPalette("palette/greyscale.pal")
+// and adding it to the constructor instead
+PhotoRenderer photoViewer = new PhotoRenderer(GreyscalePalette.getPalette(), RenderOption.SEPIA);
+
+var photoData = Files.readAllBytes(Path.of("photo.bin"));
+var src = photoViewer.createImage(photoData);
+
+ImageIO.write(src, "PNG", new File("output_sepia.png"));```
