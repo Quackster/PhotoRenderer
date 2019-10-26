@@ -1,5 +1,6 @@
 package org.alexdev.photorenderer.test;
 
+import org.alexdev.photorenderer.GreyscalePalette;
 import org.alexdev.photorenderer.PhotoRenderOption;
 import org.alexdev.photorenderer.PhotoRenderer;
 import org.alexdev.photorenderer.test.game.Photo;
@@ -32,7 +33,8 @@ public class App {
         }
 
         PhotoRenderer photoViewer = new PhotoRenderer();
-        var palette = photoViewer.readPalette("grayscale.pal");
+
+        var palette = GreyscalePalette.getPalette();
         var src = photoViewer.createImage(photo.getData(), palette, PhotoRenderOption.SEPIA);
 
         ImageIO.write(src, "PNG", new File("image2.png"));
