@@ -2,11 +2,13 @@ package org.alexdev.photorenderer;
 
 import com.google.common.io.LittleEndianDataInputStream;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -130,7 +132,14 @@ public class PhotoRenderer {
             Graphics2D g2 = img.createGraphics();
             g2.drawImage(image, 0, 0, null);
             g2.dispose();
-            return img;
+
+            // Sneaky stuff to re-add back black border, else just use "return img;" here
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ImageIO.write(img, "PNG", bos);
+            byte[] imageBytes = bos.toByteArray();
+
+            var borderEffect = new BorderEffect(1, Color.black);
+            return borderEffect.apply(ImageIO.read(new ByteArrayInputStream(imageBytes)));
         }
 
         return image;
