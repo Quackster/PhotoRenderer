@@ -3,5 +3,10 @@ A tool used to render old Habbo photos. This supports the Habbo camera used from
 
 ## Output
 
+Traditional Sepia theme:
+
 ![](https://i.imgur.com/x0dLwN6.png)
 
+Greyscale theme:
+
+![](https://i.imgur.com/2M8qYJJ.png)

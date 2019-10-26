@@ -11,12 +11,14 @@ import java.nio.file.Path;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        // Feel free to read your own PAL files by using PaletteUtils.readPalette("palette/greyscale.pal")
+        // and adding it to the constructor instead
         PhotoRenderer photoViewer = new PhotoRenderer(GreyscalePalette.getPalette(), RenderOption.SEPIA);
 
         var photoData = Files.readAllBytes(Path.of("photo.bin"));
         var src = photoViewer.createImage(photoData);
 
-        ImageIO.write(src, "PNG", new File("image2.png"));
+        ImageIO.write(src, "PNG", new File("output_sepia.png"));
     }
 /*
          BufferedImage in = ImageIO.read(new FileInputStream("image.png"));
