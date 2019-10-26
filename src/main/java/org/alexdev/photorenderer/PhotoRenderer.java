@@ -4,13 +4,15 @@ import com.google.common.io.LittleEndianDataInputStream;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
-public class PhotoViewer {
-    public BufferedImage readFile(byte[] photoData, Color[] paletteData) throws Exception {
+public class PhotoRenderer {
+    public BufferedImage createImage(byte[] photoData, Color[] paletteData, PhotoRenderOption option) throws Exception {
         int CAST_PROPERTIES_OFFSET = 28;
 
         var bigEndianStream = new DataInputStream(new ByteArrayInputStream(photoData));
@@ -94,6 +96,42 @@ public class PhotoViewer {
 
         littleEndianStream.close();
         bigEndianStream.close();
+
+        if (option == PhotoRenderOption.SEPIA) {
+            int[] palettes = {
+                    0xffb85e2f,
+                    0xffc06533,
+                    0xfff08b46,
+                    0xff681f10,
+                    0xff88381c,
+                    0xffc86b36,
+                    0xffffd169,
+                    0xffe07e3f,
+                    0xffffb159,
+                    0xffffde6f,
+                    0xff702513,
+                    0xffffea75,
+                    0xffffd269
+            };
+
+            IndexColorModel colorModel = new IndexColorModel(8,         // bits per pixel
+                    palettes.length,         // size of color component array
+                    palettes,   // color map
+                    0,         // offset in the map
+                    false,      // has alpha
+                    0,         // the pixel value that should be transparent
+                    DataBuffer.TYPE_BYTE);
+
+            BufferedImage img = new BufferedImage(
+                    image.getWidth(), image.getHeight(), // match source
+                    BufferedImage.TYPE_BYTE_BINARY, // required to work
+                    colorModel); // TYPE_BYTE_BINARY color model (i.e. palette)
+
+            Graphics2D g2 = img.createGraphics();
+            g2.drawImage(image, 0, 0, null);
+            g2.dispose();
+            return img;
+        }
 
         return image;
     }

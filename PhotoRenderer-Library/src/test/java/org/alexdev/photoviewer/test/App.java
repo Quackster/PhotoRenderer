@@ -1,8 +1,8 @@
-package org.alexdev.photoviewer.test;
+package org.alexdev.photorenderer.test;
 
-import org.alexdev.photoviewer.PhotoViewer;
-import org.alexdev.photoviewer.test.game.Photo;
-import org.alexdev.photoviewer.test.util.LoggingConfiguration;
+import org.alexdev.photorenderer.PhotoViewer;
+import org.alexdev.photorenderer.test.game.Photo;
+import org.alexdev.photorenderer.test.util.LoggingConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
