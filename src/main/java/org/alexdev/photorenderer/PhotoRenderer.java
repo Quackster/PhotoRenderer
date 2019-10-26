@@ -417,8 +417,7 @@ public class PhotoRenderer {
             int b = input.read();
             colors[i] = new Color(r, g, b);
             input.readByte();
-
-            System.out.println("new Color( " + r + ", " + g + ", " + b + "),");
+            //System.out.println("new Color( " + r + ", " + g + ", " + b + "),");
         }
 
         return colors;
