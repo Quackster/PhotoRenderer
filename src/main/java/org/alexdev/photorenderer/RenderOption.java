@@ -1,6 +1,6 @@
 package org.alexdev.photorenderer;
 
-public enum PhotoRenderOption {
+public enum RenderOption {
     GREYSCALE,
     SEPIA
 }

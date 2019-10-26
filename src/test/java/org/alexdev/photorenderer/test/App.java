@@ -1,7 +1,7 @@
 package org.alexdev.photorenderer.test;
 
 import org.alexdev.photorenderer.palettes.GreyscalePalette;
-import org.alexdev.photorenderer.PhotoRenderOption;
+import org.alexdev.photorenderer.RenderOption;
 import org.alexdev.photorenderer.PhotoRenderer;
 
 import javax.imageio.ImageIO;
@@ -11,9 +11,11 @@ import java.nio.file.Path;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        PhotoRenderer photoViewer = new PhotoRenderer();
-        var palette = GreyscalePalette.getPalette();
-        var src = photoViewer.createImage(Files.readAllBytes(Path.of("photo.bin")), palette, PhotoRenderOption.SEPIA);
+        PhotoRenderer photoViewer = new PhotoRenderer(GreyscalePalette.getPalette(), RenderOption.SEPIA);
+
+        var photoData = Files.readAllBytes(Path.of("photo.bin"));
+        var src = photoViewer.createImage(photoData);
+
         ImageIO.write(src, "PNG", new File("image2.png"));
     }
 /*

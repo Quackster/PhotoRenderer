@@ -14,7 +14,15 @@ import java.io.DataInputStream;
 import java.util.Arrays;
 
 public class PhotoRenderer {
-    public BufferedImage createImage(byte[] photoData, Color[] paletteData, PhotoRenderOption option) throws Exception {
+    private Color[] paletteData;
+    private RenderOption option;
+
+    public PhotoRenderer(Color[] paletteData, RenderOption option) {
+        this.paletteData = paletteData;
+        this.option = option;
+    }
+
+    public BufferedImage createImage(byte[] photoData) throws Exception {
         int CAST_PROPERTIES_OFFSET = 28;
 
         var bigEndianStream = new DataInputStream(new ByteArrayInputStream(photoData));
@@ -48,7 +56,7 @@ public class PhotoRenderer {
         bigEndianStream.readInt(); // No idea! Lmao
         bigEndianStream.skip(4); // Reversed, should equal BITD
 
-        int length = bigEndianStream.readInt();
+        int length =  DataUtils.readLittleEndianInt(bigEndianStream);
         int position = 0;
 
         var data = new int[totalWidth * rectangle.height];
@@ -57,7 +65,7 @@ public class PhotoRenderer {
             int marker = bigEndianStream.read();
 
             if (marker >= 128) {
-                int fill = DataUtils.readLittleEndianByte(bigEndianStream);
+                int fill = bigEndianStream.read();
 
                 for (int i = 0; i < 257 - marker; i++) {
                     data[position] = fill;
@@ -68,7 +76,7 @@ public class PhotoRenderer {
                 int[] buffer = new int[marker + 1];
 
                 for (int i = 0; i < buffer.length; i++) {
-                    data[position] = DataUtils.readLittleEndianByte(bigEndianStream);
+                    data[position] = bigEndianStream.read();
                     position++;
                 }
             }
@@ -81,8 +89,7 @@ public class PhotoRenderer {
 
             if (row.length > 0) {
                 for (int x = 0; x < rectangle.width; x++) {
-                    int index = row[x];
-                    var rgb = paletteData[index];
+                    var rgb = this.paletteData[row[x]];
 
                     int r = rgb.getRed();
                     int g = rgb.getGreen();
@@ -96,7 +103,7 @@ public class PhotoRenderer {
 
         bigEndianStream.close();
 
-        if (option == PhotoRenderOption.SEPIA) {
+        if (option == RenderOption.SEPIA) {
             int[] palettes = {
                     0xffb85e2f,
                     0xffc06533,
