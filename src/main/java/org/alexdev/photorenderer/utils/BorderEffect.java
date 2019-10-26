@@ -1,4 +1,4 @@
-package org.alexdev.photorenderer;
+package org.alexdev.photorenderer.utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

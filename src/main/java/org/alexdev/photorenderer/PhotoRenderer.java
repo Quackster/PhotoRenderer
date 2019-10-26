@@ -1,6 +1,7 @@
 package org.alexdev.photorenderer;
 
-import com.google.common.io.LittleEndianDataInputStream;
+import org.alexdev.photorenderer.utils.BorderEffect;
+import org.alexdev.photorenderer.utils.DataUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,7 +11,6 @@ import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.util.Arrays;
 
 public class PhotoRenderer {
@@ -18,9 +18,7 @@ public class PhotoRenderer {
         int CAST_PROPERTIES_OFFSET = 28;
 
         var bigEndianStream = new DataInputStream(new ByteArrayInputStream(photoData));
-        var littleEndianStream = new LittleEndianDataInputStream(bigEndianStream);
-
-        littleEndianStream.skip(CAST_PROPERTIES_OFFSET);
+        bigEndianStream.skip(CAST_PROPERTIES_OFFSET);
 
         int totalWidth = bigEndianStream.readShort() & 0x7FFF;
 
@@ -31,13 +29,13 @@ public class PhotoRenderer {
 
         Rectangle rectangle = new Rectangle(left, top, right - left, bottom - top);
 
-        littleEndianStream.read();
-        littleEndianStream.skip(7);
+        bigEndianStream.read();
+        bigEndianStream.skip(7);
         bigEndianStream.readShort();
         bigEndianStream.readShort();
-        littleEndianStream.read();
+        bigEndianStream.read();
 
-        int bitDepth = littleEndianStream.read();
+        int bitDepth = DataUtils.readLittleEndianByte(bigEndianStream);
 
         if (bitDepth != 8)
             throw new Exception("illegal");
@@ -47,19 +45,19 @@ public class PhotoRenderer {
         if (palette != -3)
             throw new Exception("illegal");
 
-        littleEndianStream.readInt(); // No idea! Lmao
-        littleEndianStream.skip(4); // Reversed, should equal BITD
+        bigEndianStream.readInt(); // No idea! Lmao
+        bigEndianStream.skip(4); // Reversed, should equal BITD
 
-        int length = littleEndianStream.readInt();
+        int length = bigEndianStream.readInt();
         int position = 0;
 
         var data = new int[totalWidth * rectangle.height];
 
-        while (littleEndianStream.available() > 0) {
-            int marker = littleEndianStream.read();
+        while (bigEndianStream.available() > 0) {
+            int marker = bigEndianStream.read();
 
             if (marker >= 128) {
-                int fill = littleEndianStream.read();
+                int fill = DataUtils.readLittleEndianByte(bigEndianStream);
 
                 for (int i = 0; i < 257 - marker; i++) {
                     data[position] = fill;
@@ -70,7 +68,7 @@ public class PhotoRenderer {
                 int[] buffer = new int[marker + 1];
 
                 for (int i = 0; i < buffer.length; i++) {
-                    data[position] = littleEndianStream.read();
+                    data[position] = DataUtils.readLittleEndianByte(bigEndianStream);
                     position++;
                 }
             }
@@ -96,7 +94,6 @@ public class PhotoRenderer {
             }
         }
 
-        littleEndianStream.close();
         bigEndianStream.close();
 
         if (option == PhotoRenderOption.SEPIA) {
@@ -143,31 +140,5 @@ public class PhotoRenderer {
         }
 
         return image;
-    }
-
-    public Color[] readPalette(String paletteFileName) throws Exception {
-        var input = new LittleEndianDataInputStream(new FileInputStream(paletteFileName));
-        new String(input.readNBytes(4));
-
-        input.readInt();
-
-        new String(input.readNBytes(4));
-        new String(input.readNBytes(4));
-
-        input.readInt();
-        input.readShort();
-
-        Color[] colors = new Color[input.readShort()];
-
-        for (int i = 0; i < colors.length; i++) {
-            int r = input.read();
-            int g = input.read();
-            int b = input.read();
-            colors[i] = new Color(r, g, b);
-            input.readByte();
-            //System.out.println("new Color( " + r + ", " + g + ", " + b + "),");
-        }
-
-        return colors;
     }
 }

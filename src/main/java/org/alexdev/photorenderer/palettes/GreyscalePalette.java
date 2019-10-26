@@ -1,4 +1,4 @@
-package org.alexdev.photorenderer;
+package org.alexdev.photorenderer.palettes;
 
 import java.awt.*;
 
