@@ -23,3 +23,7 @@ var src = photoViewer.createImage(photoData);
 
 ImageIO.write(src, "PNG", new File("output_sepia.png"));
 ```
+
+## Contributors
+
+@PaulusParssinen - Originally wrote this in C# (Greyscale only) so I ported it to Java and created the Sepia/official Habbo output.
